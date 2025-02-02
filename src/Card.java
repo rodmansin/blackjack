@@ -24,4 +24,8 @@ public class Card {
     public boolean checkAce() {
         return rank.equals("A");
     }
+
+    public String getImgPath() {
+        return "./cards/" + toString() + ".png";
+    }
 }

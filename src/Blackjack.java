@@ -1,21 +1,66 @@
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class Blackjack {
+    //Game attributes
     ArrayList<Card> deck;
     Random random = new Random();
-    //Dealer
+    //Dealer attributes
     Card faceDownCard, faceUpCard;
     ArrayList<Card> dealerHand;
     int dealerValue;
     int dealerAces;
-    //Player
+    //Player attributes
     ArrayList<Card> playerHand;
     int playerValue;
     int playerAces;
+    //UI
+    int screenWidth = 1000, screenHeight = 720;
+    final int cardWidth = 120, cardHeight = 168;
+    JFrame frame = new JFrame("Blackjack");
+    JPanel mainPanel = new JPanel() {
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            Image faceDownCardImg = new ImageIcon(getClass().getResource("./cards/Back.png")).getImage();
+            g.drawImage(faceDownCardImg, 40, 4, (int)(cardWidth*1.35), (int)(cardHeight*1.35), null);
+            for (int i = 0; i < dealerHand.size(); i++) {
+                Card card = dealerHand.get(i);
+                Image cardImg = new ImageIcon(getClass().getResource(card.getImgPath())).getImage();
+                g.drawImage(cardImg, cardWidth + 80 + i*(cardWidth + 20), 30, cardWidth, cardHeight, null);
+            }
+            for (int i = 0; i < playerHand.size(); i++) {
+                Card card = playerHand.get(i);
+                Image cardImg = new ImageIcon(getClass().getResource(card.getImgPath())).getImage();
+                g.drawImage(cardImg, 60 + i*(cardWidth + 20), 400, cardWidth, cardHeight, null);
+            }
+        }
+    };
+    JPanel buttonPanel = new JPanel();
+    JButton hitButton = new JButton("Hit");
+    JButton standButton = new JButton("Stand");
 
     Blackjack() {
         newGame();
+        //GUI
+        frame.setVisible(true);
+        frame.setSize(screenWidth, screenHeight);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBackground(new Color(16,59,52));
+        frame.add(mainPanel);
+
+        hitButton.setFocusable(false);
+        buttonPanel.add(hitButton);
+        standButton.setFocusable(false);
+        buttonPanel.add(standButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
     }
 
     public void newGame(){
