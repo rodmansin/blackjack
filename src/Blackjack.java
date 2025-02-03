@@ -25,9 +25,13 @@ public class Blackjack {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-
             Image faceDownCardImg = new ImageIcon(getClass().getResource("./cards/Back.png")).getImage();
-            g.drawImage(faceDownCardImg, 40, 4, (int)(cardWidth*1.35), (int)(cardHeight*1.35), null);
+            if (!standButton.isEnabled()) {
+                faceDownCardImg = new ImageIcon(getClass().getResource(faceDownCard.getImgPath())).getImage();
+                g.drawImage(faceDownCardImg, 60, 30, cardWidth, cardHeight, null);
+            } else {
+                g.drawImage(faceDownCardImg, 40, 4, (int)(cardWidth*1.35), (int)(cardHeight*1.35), null);
+            }
             for (int i = 0; i < dealerHand.size(); i++) {
                 Card card = dealerHand.get(i);
                 Image cardImg = new ImageIcon(getClass().getResource(card.getImgPath())).getImage();
@@ -37,6 +41,27 @@ public class Blackjack {
                 Card card = playerHand.get(i);
                 Image cardImg = new ImageIcon(getClass().getResource(card.getImgPath())).getImage();
                 g.drawImage(cardImg, 60 + i*(cardWidth + 20), 400, cardWidth, cardHeight, null);
+            }
+
+            if (!standButton.isEnabled()) {
+                playerValue = lowestPlayerValue();
+                dealerValue = lowestDealerValue();
+                String result = "";
+                if (playerValue > 21) {
+                    result = "You have gone bust. You lose.";
+                } else if (dealerValue > 21) {
+                    result = "The dealer has gone bust. You win!";
+                } else if (playerValue == dealerValue) {
+                    result = "You and the dealer both have " + playerValue + ". Push.";
+                } else if (playerValue > dealerValue) { 
+                    result = "You have " + playerValue + ". You win!";
+                } else if (dealerValue > playerValue) {
+                    result = "The dealer has " + dealerValue + ". You lose.";
+                }
+
+                g.setFont (new Font ("Helvetica Bold", Font.PLAIN, 30));
+                g.setColor(Color.WHITE);
+                g.drawString(result, 50, 300);
             }
         }
     };
@@ -61,6 +86,40 @@ public class Blackjack {
         standButton.setFocusable(false);
         buttonPanel.add(standButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        //Player hit
+        hitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Card card = deck.remove(deck.size() - 1);
+                playerValue += card.getValue();
+                if (card.checkAce()) {
+                    playerAces++;
+                }
+                playerHand.add(card);
+                if (lowestPlayerValue() > 21) {
+                    hitButton.setEnabled(false);
+                }
+                mainPanel.repaint();
+            }
+        });
+        
+        //Player stand
+        standButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                hitButton.setEnabled(false);
+                standButton.setEnabled(false);
+                while (dealerValue < 17) {
+                    Card card = deck.remove(deck.size()-1);
+                    dealerValue += card.getValue();
+                    if (card.checkAce()) {
+                        dealerAces++;
+                    }
+                    dealerHand.add(card);
+                }
+                mainPanel.repaint();
+            }
+        });
+        mainPanel.repaint();
     }
 
     public void newGame(){
@@ -115,5 +174,21 @@ public class Blackjack {
             deck.set(i, card2);
             deck.set(j, card1);
         }
+    }
+
+    public int lowestPlayerValue() {
+        while (playerValue > 21 && playerAces > 0) {
+            playerValue -= 10;
+            playerAces--;
+        }
+        return playerValue;
+    }
+
+    public int lowestDealerValue() {
+        while (dealerValue > 21 && dealerAces > 0) {
+            dealerValue -= 10;
+            playerAces--;
+        }
+        return dealerValue;
     }
 }
