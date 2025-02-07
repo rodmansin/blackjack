@@ -25,7 +25,7 @@ public class Blackjack {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            Image faceDownCardImg = new ImageIcon(getClass().getResource("./cards/Back.png")).getImage();
+            Image faceDownCardImg = new ImageIcon(getClass().getResource("./images/cards/Back.png")).getImage();
             if (!standButton.isEnabled()) {
                 faceDownCardImg = new ImageIcon(getClass().getResource(faceDownCard.getImgPath())).getImage();
                 g.drawImage(faceDownCardImg, 60, 30, cardWidth, cardHeight, null);
@@ -98,6 +98,8 @@ public class Blackjack {
                 playerHand.add(card);
                 if (lowestPlayerValue() > 21) {
                     hitButton.setEnabled(false);
+                    standButton.setEnabled(false);
+                    mainPanel.repaint();
                 }
                 mainPanel.repaint();
             }
