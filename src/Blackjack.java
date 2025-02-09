@@ -18,29 +18,33 @@ public class Blackjack {
     int playerValue;
     int playerAces;
     //UI
-    int screenWidth = 1000, screenHeight = 720;
+    int screenWidth = 1000, screenHeight = 800;
     final int cardWidth = 120, cardHeight = 168;
     JFrame frame = new JFrame("Blackjack");
     JPanel mainPanel = new JPanel() {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
+            Image dealerImg = new ImageIcon(getClass().getResource("./images/dealer.png")).getImage();
+            int dealerWidth = 150, dealerHeight = 150;
+            g.drawImage(dealerImg, 50, 20, dealerWidth, dealerHeight, null);
+
             Image faceDownCardImg = new ImageIcon(getClass().getResource("./images/cards/Back.png")).getImage();
             if (!standButton.isEnabled()) {
                 faceDownCardImg = new ImageIcon(getClass().getResource(faceDownCard.getImgPath())).getImage();
-                g.drawImage(faceDownCardImg, 60, 30, cardWidth, cardHeight, null);
+                g.drawImage(faceDownCardImg, 60, 218, cardWidth, cardHeight, null);
             } else {
-                g.drawImage(faceDownCardImg, 40, 4, (int)(cardWidth*1.35), (int)(cardHeight*1.35), null);
+                g.drawImage(faceDownCardImg, 40, 190, (int)(cardWidth*1.35), (int)(cardHeight*1.35), null);
             }
             for (int i = 0; i < dealerHand.size(); i++) {
                 Card card = dealerHand.get(i);
                 Image cardImg = new ImageIcon(getClass().getResource(card.getImgPath())).getImage();
-                g.drawImage(cardImg, cardWidth + 80 + i*(cardWidth + 20), 30, cardWidth, cardHeight, null);
+                g.drawImage(cardImg, cardWidth + 80 + i*(cardWidth + 20), 218, cardWidth, cardHeight, null);
             }
             for (int i = 0; i < playerHand.size(); i++) {
                 Card card = playerHand.get(i);
                 Image cardImg = new ImageIcon(getClass().getResource(card.getImgPath())).getImage();
-                g.drawImage(cardImg, 60 + i*(cardWidth + 20), 400, cardWidth, cardHeight, null);
+                g.drawImage(cardImg, 60 + i*(cardWidth + 20), 500, cardWidth, cardHeight, null);
             }
 
             if (!standButton.isEnabled()) {
@@ -61,7 +65,7 @@ public class Blackjack {
 
                 g.setFont (new Font ("Helvetica Bold", Font.PLAIN, 30));
                 g.setColor(Color.WHITE);
-                g.drawString(result, 50, 300);
+                g.drawString(result, 225, 115);
             }
         }
     };
